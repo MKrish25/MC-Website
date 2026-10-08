@@ -1,0 +1,32 @@
+# Environment variables & secrets (NEVER commit these)
+.env
+.env.local
+.env.*.local
+*.env
+
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Local Database & Uploads
+data/
+*.db
+*.db-shm
+*.db-wal
+data/uploads/
+
+# Build artifacts
+dist/
+client/dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# System & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+

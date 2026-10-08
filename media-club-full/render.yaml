@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: media-club-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        sync: false # Set to your Vercel URL, e.g. https://your-site.vercel.app
+      - key: DATABASE_URL
+        sync: false # Set to your Supabase PostgreSQL connection URI
+      - key: AUTO_APPROVE
+        value: false
+      - key: S3_ENDPOINT
+        sync: false # e.g. https://<project-ref>.storage.supabase.co/v1/s3
+      - key: S3_REGION
+        value: auto
+      - key: S3_BUCKET
+        value: MC Website
+      - key: S3_KEY
+        sync: false # Supabase S3 Access Key ID
+      - key: S3_SECRET
+        sync: false # Supabase S3 Secret Access Key
+      - key: S3_PUBLIC_URL
+        sync: false # e.g. https://<project-ref>.supabase.co/storage/v1/object/public/<bucket>
+      - key: S3_FORCE_PATH_STYLE
+        value: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+

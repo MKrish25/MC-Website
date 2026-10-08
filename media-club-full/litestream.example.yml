@@ -1,0 +1,14 @@
+# Litestream: continuous SQLite replication to the same S3 bucket as uploads.
+# The database file stays on the server's disk for speed; every change is
+# streamed to the cloud within seconds, so nothing is "local only".
+# Install: https://litestream.io/install/  then: litestream replicate -config litestream.yml
+# Replace the bracketed values and rename this file to litestream.yml.
+dbs:
+  - path: ./data/media-club.db
+    replicas:
+      - url: s3://[S3_BUCKET]/db/media-club.db
+        endpoint: "[S3_ENDPOINT]"
+        access-key-id: "[S3_KEY]"
+        secret-access-key: "[S3_SECRET]"
+        # bucket region; use "auto" for Cloudflare R2
+        region: "[S3_REGION]"

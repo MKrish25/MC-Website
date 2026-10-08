@@ -1,0 +1,33 @@
+{
+  "name": "media-club-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend for the MEDIA CLUB site: auth, profiles, gallery uploads with moderation, events, journal, forms.",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed:admin": "node src/seed.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1146.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.3.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^10.0.14",
+    "pg": "^8.23.1",
+    "sharp": "^0.33.5",
+    "zod": "^3.23.8"
+  }
+}

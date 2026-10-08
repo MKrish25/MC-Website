@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MEDIA CLUB Admin</title>
+<style>
+:root{--ink:#0a0a0a;--gray:#666;--line:#ddd;--bg:#fafaf8;--green:#137333;--amber:#b06000;--red:#b3261e}
+*{box-sizing:border-box}body{font:14px/1.5 system-ui,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
+main{max-width:1000px;margin:0 auto;padding:24px}h1{font-size:22px;margin:0 0 4px}h2{font-size:16px;margin:0 0 10px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.row>.grow{flex:1;min-width:180px}
+button,select,input,textarea{font:inherit;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:#fff}
+button{cursor:pointer}button.pri{background:var(--ink);color:#fff;border-color:var(--ink)}button.bad{color:var(--red)}
+button.ok{color:var(--green)}input,textarea{width:100%}.mut{color:var(--gray);font-size:12.5px}
+.thumb{width:84px;height:84px;object-fit:cover;border-radius:8px;background:#eee}
+#login{max-width:340px;margin:12vh auto}#err{color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.badge{display:inline-block;padding:1px 8px;border-radius:20px;font-size:12px;border:1px solid var(--line)}
+.b-pending{background:#fff4e0;border-color:#e8c47a;color:var(--amber)}.b-active{background:#e6f4ea;border-color:#a3d9b1;color:var(--green)}.b-rejected{background:#fdecea;border-color:#f5a9a3;color:var(--red)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 20px}
+.tab{font:inherit;font-size:13px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--gray);cursor:pointer}
+.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tab .cnt{opacity:.65;font-size:12px;margin-left:6px}
+.pane{display:none}.pane.on{display:block;animation:fadeUp .3s ease}@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.search{max-width:320px;margin-bottom:12px}
+.editbox{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.editbox .grid2{margin-bottom:8px}
+</style></head><body><main>
+<div id="login" hidden><h1>Admin</h1><p class="mut">Sign in with an admin account.</p>
+<div class="card"><input id="em" type="email" placeholder="Email"><br><br><input id="pw" type="password" placeholder="Password"><br><br><button class="pri" id="go">Log in</button><p><a href="/#reset">Forgot password?</a></p><p id="err"></p></div></div>
+<div id="app" hidden>
+<div class="row"><div class="grow"><h1>MEDIA CLUB admin</h1><span class="mut" id="who"></span></div><a href="/">View site</a><button id="out">Log out</button></div>
+<div class="tabs" id="tabs" role="tablist"></div>
+
+<div class="pane" data-pane="requests"><h2>Membership requests <span class="mut" id="mrc"></span></h2><div id="requests"></div>
+<h2>Gallery awaiting approval <span class="mut" id="pc"></span></h2><div id="pending"></div></div>
+
+<div class="pane" data-pane="members"><h2>Members <span class="mut" id="uc"></span></h2>
+<div class="card"><b>Add a member</b><p class="mut">Created active immediately — no approval needed. They can log in right away.</p>
+<div class="grid2"><input id="n-email" type="email" placeholder="Email"><input id="n-pass" placeholder="Password (8+ chars)"></div><br>
+<div class="grid2"><input id="n-name" placeholder="Display name (optional)"><select id="n-role"><option value="member">member</option><option value="oc">oc</option><option value="admin">admin</option></select></div><br>
+<button class="pri" id="n-add">Add member</button></div>
+<input id="u-search" class="search" placeholder="Search members by name or email…">
+<div id="users"></div></div>
+
+<div class="pane" data-pane="events"><h2 id="e-form-title">Add event</h2><div class="card"><div class="grid2">
+<input id="e-title" placeholder="Title"><input id="e-tag" placeholder="Tag (Open to all)">
+<div><span class="mut">Starts</span><input id="e-start" type="datetime-local"></div><div><span class="mut">Ends (optional)</span><input id="e-end" type="datetime-local"></div>
+</div><br><input id="e-blurb" placeholder="One-line summary"><br><br><textarea id="e-desc" rows="3" placeholder="Description"></textarea><br><br>
+<textarea id="e-hl" rows="2" placeholder="Highlights, one per line"></textarea><br><br>
+<label class="upload-btn" for="e-photos" style="display:inline-block; margin-bottom:10px;">Add event photos</label>
+<input type="file" id="e-photos" accept="image/*" multiple style="display:none;">
+<div id="e-thumbs" class="row"></div><br>
+<button class="pri" id="e-add">Publish event</button><button id="e-cancel" hidden>Cancel edit</button></div>
+<h2>Events <span class="mut" id="ec"></span></h2><div id="events"></div></div>
+
+<div class="pane" data-pane="gallery"><h2>All gallery <span class="mut" id="gc"></span></h2><div id="gallery"></div></div>
+
+<div class="pane" data-pane="journal"><h2 id="p-form-title">Write journal post</h2><div class="card"><input id="p-title" placeholder="Title"><br><br><textarea id="p-body" rows="5" placeholder="Body"></textarea><br><br><button class="pri" id="p-add">Publish post</button><button id="p-cancel" hidden>Cancel edit</button></div>
+<h2>Posts <span class="mut" id="poc"></span></h2><div id="posts"></div></div>
+
+<div class="pane" data-pane="inbox"><h2>Join applications <span class="mut" id="ac"></span></h2><div id="apps"></div>
+<h2>Contact messages <span class="mut" id="mc"></span></h2><div id="msgs"></div></div>
+
+<div class="pane" data-pane="pages"><h2>Site pages</h2>
+<p class="mut">Hide a page and it disappears from the menu everywhere; direct links bounce back home. Home and the login page always stay on so nobody gets locked out.</p>
+<div id="pages"></div></div>
+</div></main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function api(m,u,b){const r=await fetch('/api'+u,{method:m,credentials:'same-origin',headers:b?{'Content-Type':'application/json'}:{},body:b?JSON.stringify(b):undefined});
+ const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||r.status);return d}
+let curTab=localStorage.getItem('mc_admin_tab')||'requests';
+function setTab(t){curTab=t;localStorage.setItem('mc_admin_tab',t);
+ document.querySelectorAll('#tabs .tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+ document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.dataset.pane===t));
+ if(t==='pages'&&typeof loadPages==='function')loadPages();}
+const act=async(m,u,b)=>{try{await api(m,u,b);load()}catch(e){alert(e.message)}};
+window.act=act;
+let editingEvent=null, editingPost=null, editingUser=null, cache={events:[],posts:[],users:[]};
+let evPhotos=[];
+function renderEvThumbs(){
+ $('e-thumbs').innerHTML = evPhotos.map((s,i)=>`<div style="position:relative"><img class="thumb" src="${esc(s)}"><button class="bad" style="position:absolute;top:-8px;right:-8px;padding:2px 8px;" onclick="evPhotos.splice(${i},1);renderEvThumbs()">✕</button></div>`).join('')
+  || '<span class="mut">No photos yet.</span>';
+}
+window.renderEvThumbs=renderEvThumbs;
+$('e-photos').onchange=e=>{
+ [...e.target.files].slice(0,12-evPhotos.length).forEach(f=>{
+  const r=new FileReader(); r.onload=()=>{ evPhotos.push(r.result); renderEvThumbs(); }; r.readAsDataURL(f);
+ });
+ e.target.value='';
+};
+renderEvThumbs();
+function toLocal(v){try{const d=new Date(v);const p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());}catch(_){return ''}}
+async function boot(){const {user}=await api('GET','/auth/me');
+ if(user&&user.role==='admin'){$('login').hidden=true;$('app').hidden=false;$('who').textContent=user.email;load()}else{$('app').hidden=true;$('login').hidden=false}}
+$('go').onclick=async()=>{try{await api('POST','/auth/login',{email:$('em').value,password:$('pw').value});boot()}catch(e){$('err').textContent=e.message}};
+$('out').onclick=async()=>{await api('POST','/auth/logout');boot()};
+function badge(s){return `<span class="badge b-${esc(s||'active')}">${esc(s||'active')}</span>`}
+function userCard(u){
+ const p=u.profile||{};
+ const ed=editingUser===u.id;
+ return `<div class="card"><div class="row"><div class="grow"><b>${esc(u.name||u.email)}</b> ${badge(u.status)} <span class="mut">${esc(u.role)}</span><div class="mut">${esc(u.email)} · ${esc(u.created_at)} · gallery: ${u.galleryCount||0}</div>
+ ${p&&p.department?`<div class="mut">${esc(p.department)}${p.batch?' · '+esc(p.batch):''}</div>`:''}</div>
+ ${u.status==='pending'?`<button class="ok" onclick="act('POST','/admin/users/${u.id}/approve')">Approve</button><button onclick="act('POST','/admin/users/${u.id}/reject')">Reject</button>`:''}
+ ${u.status==='rejected'?`<button class="ok" onclick="act('POST','/admin/users/${u.id}/approve')">Re-approve</button>`:''}
+ <button onclick="toggleEditUser('${u.id}')">${ed?'Close':'Edit'}</button>
+ <select onchange="act('POST','/admin/users/${u.id}/role',{role:this.value})">${['member','oc','admin'].map(r=>`<option ${r===u.role?'selected':''}>${r}</option>`).join('')}</select>
+ <select onchange="act('POST','/admin/users/${u.id}/status',{status:this.value})">${['pending','active','rejected'].map(s=>`<option ${s===(u.status||'active')?'selected':''}>${s}</option>`).join('')}</select>
+ <button class="bad" onclick="confirm('Delete this user and their uploads?')&&act('DELETE','/admin/users/${u.id}')">Remove</button></div>
+ ${ed?`<div class="editbox"><div class="grid2">
+ <input id="eu-name" placeholder="Display name" value="${esc(p.name||u.name||'')}">
+ <input id="eu-dept" placeholder="Department / role text" value="${esc(p.department||p.role||'')}">
+ <input id="eu-insta" placeholder="Instagram" value="${esc(p.insta||'')}">
+ <input id="eu-cam" placeholder="Favorite camera" value="${esc(p.favCamera||'')}">
+ </div><textarea id="eu-bio" rows="2" placeholder="Bio">${esc(p.bio||'')}</textarea><br><br>
+ <button class="pri" onclick="saveUser('${u.id}')">Save member</button></div>`:''}</div>`;
+}
+window.toggleEditUser=id=>{editingUser=editingUser===id?null:id;renderUsers();};
+window.saveUser=async id=>{
+ const b={name:$('eu-name').value,department:$('eu-dept').value,insta:$('eu-insta').value,favCamera:$('eu-cam').value,bio:$('eu-bio').value};
+ try{await api('PUT','/admin/users/'+id+'/profile',b);editingUser=null;load();}catch(e){alert(e.message)}};
+function renderUsers(){
+ const q=($('u-search').value||'').toLowerCase();
+ const list=cache.users.filter(u=>(u.email+' '+(u.name||'')).toLowerCase().includes(q));
+ $('uc').textContent='('+cache.users.length+(q?` · showing ${list.length}`:'')+')';
+ $('users').innerHTML=list.map(userCard).join('')||'<p class="mut">No members yet — add one above.</p>';
+}
+async function load(){
+ const o=await api('GET','/admin/overview');
+ const ev=o.events||[], po=o.posts||[];
+ cache={events:ev,posts:po,users:o.users||[]};
+ const reqs=o.pendingUsers||[];
+  const tabs=[['requests','Requests',reqs.length+o.pending.length],['members','Members',cache.users.length],['events','Events',ev.length],['gallery','Gallery',(o.allGallery||[]).length],['journal','Journal',po.length],['inbox','Inbox',o.applications.length+o.messages.filter(m=>!m.handled).length],['pages','Pages','']];
+ $('tabs').innerHTML=tabs.map(([k,l,c])=>`<button class="tab${curTab===k?' on':''}" data-tab="${k}">${l}<span class="cnt">${c}</span></button>`).join('');
+ $('tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+ setTab(curTab);
+ $('mrc').textContent='('+reqs.length+')';
+ $('requests').innerHTML=reqs.map(u=>`<div class="card row"><div class="grow"><b>${esc(u.email)}</b> ${badge(u.status)}<div class="mut">${esc(u.created_at)} · ${esc(u.name||'no profile yet')} · gallery: ${u.galleryCount||0}</div></div>
+  <button class="ok" onclick="act('POST','/admin/users/${u.id}/approve')">Approve</button>
+  <button onclick="act('POST','/admin/users/${u.id}/reject')">Reject</button>
+  <button class="bad" onclick="confirm('Delete this request?')&&act('DELETE','/admin/users/${u.id}')">Delete</button></div>`).join('')||'<p class="mut">No pending requests.</p>';
+ $('pc').textContent='('+o.pending.length+')';
+ $('pending').innerHTML=o.pending.map(g=>`<div class="card row">${g.type==='video'?`<video class="thumb" src="${esc(g.src)}" controls></video>`:`<img class="thumb" src="${esc(g.src)}">`}
+  <div class="grow"><b>${esc(g.by||g.email)}</b><div class="mut">${esc(g.email)} · ${esc(g.category)} · ${esc(g.uploadedAt)}</div><div>${esc(g.caption||'')}</div></div>
+  <button class="pri" onclick="act('POST','/admin/gallery/${g.id}/approve')">Approve</button><button class="bad" onclick="act('POST','/admin/gallery/${g.id}/reject')">Reject</button>
+  <button class="bad" onclick="confirm('Delete upload?')&&act('DELETE','/admin/gallery/${g.id}')">Delete</button></div>`).join('')||'<p class="mut">Nothing waiting.</p>';
+ const all=o.allGallery||[];
+ $('gc').textContent='('+all.length+')';
+ $('gallery').innerHTML=all.map(g=>`<div class="card row">${g.type==='video'?`<video class="thumb" src="${esc(g.src)}" controls></video>`:`<img class="thumb" src="${esc(g.src)}">`}
+  <div class="grow"><b>${esc(g.email)}</b> ${badge(g.status)}<div class="mut">${esc(g.category)} · ${esc(g.uploadedAt)} ${g.featured?'· ★ featured':''}</div><div>${esc(g.caption||'')}</div></div>
+  ${g.status==='pending'?`<button class="pri" onclick="act('POST','/admin/gallery/${g.id}/approve')">Approve</button>`:''}
+  <button onclick="act('POST','/admin/gallery/${g.id}/feature')">★ Feature</button>
+  <button class="bad" onclick="confirm('Delete upload?')&&act('DELETE','/admin/gallery/${g.id}')">Delete</button></div>`).join('')||'<p class="mut">None.</p>';
+ $('ec').textContent='('+ev.length+')';
+ $('events').innerHTML=ev.map(e=>`<div class="card row"><div class="grow"><b>${esc(e.t)}</b><div class="mut">${esc(e.start)} · ${esc(e.tag)}</div><div class="mut">${esc(e.p||'')}</div></div>
+  <button onclick="editEvent('${e.id}')">Edit</button><button class="bad" onclick="confirm('Delete?')&&act('DELETE','/events/${e.id}')">Delete</button></div>`).join('')||'<p class="mut">None.</p>';
+ $('poc').textContent='('+po.length+')';
+ $('posts').innerHTML=po.map(p=>`<div class="card row"><div class="grow"><b>${esc(p.t)}</b><div class="mut">${esc(p.a)} · ${esc(p.d)}</div></div>
+  <button onclick="editPost('${p.id}')">Edit</button><button class="bad" onclick="confirm('Delete?')&&act('DELETE','/posts/${p.id}')">Delete</button></div>`).join('')||'<p class="mut">None.</p>';
+ $('ac').textContent='('+o.applications.length+')';
+ $('apps').innerHTML=o.applications.map(a=>`<div class="card"><div class="row"><div class="grow"><b>${esc(a.name)}</b> · ${esc(a.email)} <span class="mut">${esc(a.interest)} · ${esc(a.status)}</span></div>
+  <button onclick="act('POST','/admin/applications/${a.id}/status',{status:'accepted'})">Accept</button><button onclick="act('POST','/admin/applications/${a.id}/status',{status:'declined'})">Decline</button></div>
+  <div class="mut">${esc(a.link)}</div><div>${esc(a.message)}</div></div>`).join('')||'<p class="mut">None.</p>';
+ $('mc').textContent='('+o.messages.filter(m=>!m.handled).length+' new)';
+ $('msgs').innerHTML=o.messages.map(m=>`<div class="card"><div class="row"><div class="grow"><b>${esc(m.name)}</b> · <a href="mailto:${esc(m.email)}">${esc(m.email)}</a> <span class="mut">${m.handled?'handled':'new'}</span></div>
+  ${m.handled?'':`<button onclick="act('POST','/admin/messages/${m.id}/handled')">Mark handled</button>`}</div><div>${esc(m.message)}</div></div>`).join('')||'<p class="mut">None.</p>';
+  renderUsers();
+}
+const PAGE_LABELS={about:'About',gallery:'Gallery',team:'Committee',portfolio:'Portfolio',events:'Events',history:'History',connect:'Connect'};
+async function loadPages(){
+  let vis={};
+  try{ vis=(await api('GET','/site')).pages||{}; }catch(e){ $('pages').innerHTML='<p class="mut">Could not load page settings.</p>'; return; }
+  $('pages').innerHTML=Object.entries(PAGE_LABELS).map(([k,label])=>`<div class="card row"><div class="grow"><b>${label}</b> <span class="mut">#${k}</span></div>
+   <button class="${vis[k]===false?'':'pri'}" data-page="${k}" data-on="${vis[k]===false?'0':'1'}">${vis[k]===false?'Hidden — show':'Visible — hide'}</button></div>`).join('');
+  $('pages').querySelectorAll('button[data-page]').forEach(b=>b.onclick=async()=>{
+    const next={}; document.querySelectorAll('#pages button[data-page]').forEach(x=>{ next[x.dataset.page]=x.dataset.on==='1'; });
+    next[b.dataset.page]=b.dataset.on!=='1';
+    try{ await api('PUT','/admin/site',{pages:next}); loadPages(); }catch(e){ alert(e.message); }
+  });
+}
+window.loadPages=loadPages;
+window.editEvent=id=>{const e=cache.events.find(x=>x.id===id);if(!e)return;editingEvent=id;setTab('events');
+ $('e-form-title').textContent='Edit event';$('e-add').textContent='Save event';$('e-cancel').hidden=false;
+ $('e-title').value=e.t||'';$('e-tag').value=e.tag||'';$('e-start').value=toLocal(e.start);$('e-end').value=toLocal(e.end||e.start);
+ $('e-blurb').value=e.p||'';$('e-desc').value=e.desc||'';$('e-hl').value=(e.highlights||[]).join('\n');
+ evPhotos=[...(e.photos||[])];renderEvThumbs();
+ window.scrollTo({top:0,behavior:'smooth'});};
+window.editPost=id=>{const p=cache.posts.find(x=>x.id===id);if(!p)return;editingPost=id;setTab('journal');
+ $('p-form-title').textContent='Edit post';$('p-add').textContent='Save post';$('p-cancel').hidden=false;
+ $('p-title').value=p.t||'';$('p-body').value=p.body||'';
+ window.scrollTo({top:0,behavior:'smooth'});};
+$('e-cancel').onclick=()=>{editingEvent=null;evPhotos=[];renderEvThumbs();$('e-form-title').textContent='Add event';$('e-add').textContent='Publish event';$('e-cancel').hidden=true;
+ ['e-title','e-tag','e-start','e-end','e-blurb','e-desc','e-hl'].forEach(i=>$(i).value='');};
+$('p-cancel').onclick=()=>{editingPost=null;$('p-form-title').textContent='Write journal post';$('p-add').textContent='Publish post';$('p-cancel').hidden=true;$('p-title').value='';$('p-body').value='';};
+$('e-add').onclick=()=>{const s=$('e-start').value;if(!$('e-title').value||!s)return alert('Title and start required');
+ const body={title:$('e-title').value,tag:$('e-tag').value||'Open to all',blurb:$('e-blurb').value,description:$('e-desc').value,start:s,end:$('e-end').value||undefined,highlights:$('e-hl').value.split('\n').map(x=>x.trim()).filter(Boolean),photos:evPhotos};
+ if(editingEvent)act('PUT','/events/'+editingEvent,body).then(()=>$('e-cancel').onclick());
+ else act('POST','/events',body)};
+$('p-add').onclick=()=>{if(!$('p-title').value||!$('p-body').value)return alert('Title and body required');
+ if(editingPost)act('PUT','/posts/'+editingPost,{title:$('p-title').value,body:$('p-body').value}).then(()=>$('p-cancel').onclick());
+ else act('POST','/posts',{title:$('p-title').value,body:$('p-body').value})};
+$('n-add').onclick=async()=>{if(!$('n-email').value||$('n-pass').value.length<8)return alert('Email and 8+ char password required');
+ try{await api('POST','/admin/users',{email:$('n-email').value,password:$('n-pass').value,role:$('n-role').value,name:$('n-name').value||undefined});
+ $('n-email').value='';$('n-pass').value='';$('n-name').value='';load();}catch(e){alert(e.message)}};
+$('u-search').oninput=renderUsers;
+boot();
+</script></body></html>

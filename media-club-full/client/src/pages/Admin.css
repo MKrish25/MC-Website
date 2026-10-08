@@ -1,0 +1,38 @@
+:root{--ink:#0a0a0a;--gray:#666;--line:#ddd;--bg:#fafaf8;--green:#137333;--amber:#b06000;--red:#b3261e}
+.mc-admin{font:14px/1.5 system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+.mc-admin *{box-sizing:border-box}
+.mc-admin main{max-width:1000px;margin:0 auto;padding:24px}
+.mc-admin h1{font-size:22px;margin:0 0 4px}
+.mc-admin h2{font-size:16px;margin:0 0 10px}
+.mc-admin .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px}
+.mc-admin .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.mc-admin .row>.grow{flex:1;min-width:180px}
+.mc-admin button,.mc-admin select,.mc-admin input,.mc-admin textarea{font:inherit;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.mc-admin button{cursor:pointer}
+.mc-admin button.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mc-admin button.bad{color:var(--red)}
+.mc-admin button.ok{color:var(--green)}
+.mc-admin input,.mc-admin textarea{width:100%}
+.mc-admin .mut{color:var(--gray);font-size:12.5px}
+.mc-admin .thumb{width:84px;height:84px;object-fit:cover;border-radius:8px;background:#eee}
+.mc-admin #login{max-width:340px;margin:12vh auto}
+.mc-admin #err{color:var(--red)}
+.mc-admin .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.mc-admin .grid2{grid-template-columns:1fr}}
+.mc-admin .badge{display:inline-block;padding:1px 8px;border-radius:20px;font-size:12px;border:1px solid var(--line)}
+.mc-admin .b-pending{background:#fff4e0;border-color:#e8c47a;color:var(--amber)}
+.mc-admin .b-active{background:#e6f4ea;border-color:#a3d9b1;color:var(--green)}
+.mc-admin .b-rejected{background:#fdecea;border-color:#f5a9a3;color:var(--red)}
+.mc-admin .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 20px}
+.mc-admin .tab{font:inherit;font-size:13px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--gray);cursor:pointer}
+.mc-admin .tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mc-admin .tab .cnt{opacity:.65;font-size:12px;margin-left:6px}
+.mc-admin .pane{display:none}
+.mc-admin .pane.on{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.mc-admin .search{max-width:320px;margin-bottom:12px}
+.mc-admin .editbox{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.mc-admin .editbox .grid2{margin-bottom:8px}
+.mc-admin .upload-btn{display:inline-block;margin-bottom:10px;text-decoration:underline;cursor:pointer}
+.mc-admin .ev-thumb-wrap{position:relative}
+.mc-admin .ev-thumb-x{position:absolute;top:-8px;right:-8px;padding:2px 8px;}

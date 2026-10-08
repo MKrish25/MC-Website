@@ -1,0 +1,38 @@
+# Environment variables & secrets (NEVER commit these)
+.env
+.env.local
+.env.*.local
+*.env
+
+# Dependencies
+node_modules/
+package-lock.json.bak
+
+# Local Database & Uploads
+data/
+*.db
+*.db-shm
+*.db-wal
+data/uploads/
+
+# Build artifacts
+dist/
+client/dist/
+build/
+.output/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
