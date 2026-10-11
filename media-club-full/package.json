@@ -5,7 +5,7 @@
   "description": "Backend for the MEDIA CLUB site: auth, profiles, gallery uploads with moderation, events, journal, forms.",
   "main": "src/server.js",
   "engines": {
-    "node": ">=18"
+    "node": "20.x"
   },
   "scripts": {
     "start": "node src/server.js",
